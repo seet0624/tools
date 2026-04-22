@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工具启动教程 · Tool Activation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold2:#E8C97A;--gold3:#F5E4A0;--golddim:#7A5F28;--bg:#08080F;--bg2:#0F0F1A;--bg3:#141420;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);--border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.35);--text:#F2EADA;--muted:#9A8B78;--dim:#5A4F42;--jade:#2FAB80;--ruby:#C94040;--r-sm:12px;--r-md:18px;--r-lg:24px;--r-xl:32px}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;overflow-x:hidden}
+.cursor{width:12px;height:12px;border-radius:50%;background:var(--gold);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s,width .2s,height .2s,opacity .2s;mix-blend-mode:difference}
+.cursor.big{width:40px;height:40px;opacity:.5}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.hero{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:0 2rem}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.12),transparent 70%);top:20%;left:30%}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(47,171,128,.07),transparent 70%);bottom:20%;right:20%}
+.hero-badge{font-family:'Cinzel',serif;font-size:11px;letter-spacing:6px;color:var(--gold);border:1px solid var(--border2);padding:8px 24px;border-radius:40px;margin-bottom:2.5rem;backdrop-filter:blur(10px);background:rgba(201,168,76,.05);opacity:0;animation:riseIn 1s ease .2s forwards}
+.hero-title{font-family:'Noto Serif SC',serif;font-size:clamp(3rem,7vw,6rem);font-weight:700;line-height:1.1;margin-bottom:.6rem;opacity:0;animation:riseIn 1s ease .4s forwards}
+.hero-title span{background:linear-gradient(135deg,var(--gold3),var(--gold),var(--golddim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-en{font-family:'Cinzel',serif;font-size:clamp(.9rem,2vw,1.3rem);letter-spacing:4px;color:var(--muted);margin-bottom:3rem;opacity:0;animation:riseIn 1s ease .6s forwards}
+.hero-stats{display:flex;gap:3rem;justify-content:center;margin-bottom:3.5rem;opacity:0;animation:riseIn 1s ease .8s forwards}
+.stat{text-align:center}.stat-num{font-family:'Cinzel',serif;font-size:2rem;color:var(--gold);font-weight:600}.stat-label{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:riseIn 1s ease 1s forwards}
+.btn{padding:13px 28px;border-radius:50px;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all .3s;font-family:'Noto Sans SC',sans-serif;display:inline-flex;align-items:center;gap:8px;font-weight:500;text-decoration:none;border:none}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--golddim));color:#0a0808;box-shadow:0 8px 32px rgba(201,168,76,.25)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(201,168,76,.4)}
+.btn-ghost{background:var(--glass);border:1px solid var(--border2);color:var(--gold);backdrop-filter:blur(10px)}
+.btn-ghost:hover{background:rgba(201,168,76,.12);transform:translateY(-3px)}
+.btn-sm{padding:9px 18px;font-size:12px}
+.scroll-arrow{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:11px;letter-spacing:3px;opacity:0;animation:riseIn 1s ease 1.4s forwards}
+.scroll-arrow::after{content:'';width:1px;height:50px;background:linear-gradient(var(--gold),transparent);margin-top:4px;animation:grow 2s ease infinite}
+@keyframes grow{0%,100%{transform:scaleY(.5);opacity:.3}50%{transform:scaleY(1);opacity:1}}
+.nav{position:sticky;top:0;z-index:200;padding:0 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.8rem 1.5rem;background:rgba(8,8,15,.85);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--r-xl);margin-top:.8rem}
+.nav-logo{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px;flex-shrink:0;margin-right:.5rem}
+.nav-pills{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-pills::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;padding:7px 16px;border-radius:50px;font-size:12px;cursor:pointer;transition:all .25s;white-space:nowrap;border:1px solid transparent;color:var(--muted);background:none}
+.pill:hover{color:var(--text);border-color:var(--border)}
+.pill.active{background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.08));border-color:var(--border2);color:var(--gold)}
+.nav-actions{display:flex;gap:.5rem;flex-shrink:0}
+.main{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:3rem 2rem 6rem}
+.filter-bar{display:flex;align-items:center;gap:1rem;margin-bottom:3rem;flex-wrap:wrap}
+.search-box{flex:1;min-width:240px;position:relative}
+.search-box input{width:100%;padding:12px 20px 12px 46px;background:var(--glass2);border:1px solid var(--border);border-radius:50px;color:var(--text);font-size:13px;font-family:'Noto Sans SC',sans-serif;outline:none;transition:all .3s;backdrop-filter:blur(10px)}
+.search-box input::placeholder{color:var(--dim)}
+.search-box input:focus{border-color:var(--border2);background:rgba(201,168,76,.06)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:15px;pointer-events:none}
+.view-btns{display:flex;background:var(--glass);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.view-btn{padding:9px 14px;cursor:pointer;transition:all .25s;color:var(--muted);font-size:15px;border:none;background:none}
+.view-btn.active{background:rgba(201,168,76,.15);color:var(--gold)}
+.sort-sel{padding:10px 16px;background:var(--glass);border:1px solid var(--border);border-radius:50px;color:var(--muted);font-size:12px;font-family:'Noto Sans SC',sans-serif;outline:none;cursor:pointer}
+.sec{margin-bottom:4rem}
+.sec-head{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;opacity:0;transform:translateY(20px);transition:all .7s}
+.sec-head.vis{opacity:1;transform:none}
+.sec-accent{width:4px;height:48px;border-radius:4px;background:linear-gradient(var(--gold),var(--golddim));flex-shrink:0}
+.sec-text h2{font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--gold);margin-bottom:3px}
+.sec-text h3{font-size:1.5rem;font-weight:400;color:var(--text)}
+.sec-count{margin-left:auto;font-size:12px;color:var(--muted);background:var(--glass);border:1px solid var(--border);padding:4px 12px;border-radius:20px;white-space:nowrap}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+.cards-grid.list-view{grid-template-columns:1fr}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:all .4s cubic-bezier(.23,1,.32,1);opacity:0;transform:translateY(30px) scale(.98);cursor:pointer;position:relative}
+.card.vis{opacity:1;transform:none}
+.card:hover{border-color:var(--border2);transform:translateY(-8px) scale(1.01);box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.15),inset 0 1px 0 rgba(255,255,255,.05)}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.04),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:1}
+.card:hover::before{opacity:1}
+.card-img{height:180px;background:linear-gradient(135deg,var(--bg2),var(--bg3));position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.23,1,.32,1);display:block;position:absolute;inset:0}
+.card:hover .card-img img{transform:scale(1.08)}
+.card-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.35}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(8,8,15,.9));z-index:1}
+.card-badge{position:absolute;top:12px;right:12px;z-index:2;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:20px;backdrop-filter:blur(8px)}
+.bboard{background:rgba(47,171,128,.2);border:1px solid rgba(47,171,128,.4);color:#5DCCA8}
+.bwatch{background:rgba(58,127,191,.2);border:1px solid rgba(58,127,191,.4);color:#7EB8EF}
+.bpendant{background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);color:var(--gold2)}
+.bjewelry{background:rgba(201,80,80,.2);border:1px solid rgba(201,80,80,.4);color:#EF8E8E}
+.bspecial{background:rgba(130,80,200,.2);border:1px solid rgba(130,80,200,.4);color:#C08EEF}
+.card-img-title{position:absolute;bottom:12px;left:14px;z-index:2}
+.card-img-title .czh{font-family:'Noto Serif SC',serif;font-size:1.1rem;font-weight:600;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.card-img-title .cen{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.6);margin-top:1px}
+.card-body{padding:1.2rem;position:relative;z-index:2}
+.card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.meta-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:var(--glass);border:1px solid var(--border);padding:4px 10px;border-radius:20px}
+.mcdot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.card-summary{font-size:12.5px;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.act-btn{flex:1;min-width:80px;padding:9px 12px;border-radius:10px;font-size:11.5px;font-family:'Noto Sans SC',sans-serif;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:5px;font-weight:500;border:none;letter-spacing:.3px}
+.act-primary{background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(201,168,76,.1));border:1px solid var(--border2);color:var(--gold)}
+.act-primary:hover{background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(201,168,76,.2));transform:scale(1.02)}
+.act-ghost{background:var(--glass);border:1px solid var(--border);color:var(--muted)}
+.act-ghost:hover{border-color:var(--border2);color:var(--text)}
+.act-icon-btn{width:34px;height:34px;min-width:34px;padding:0;border-radius:8px;font-size:14px;flex:none}
+.cards-grid.list-view .card{display:flex;flex-direction:row}
+.cards-grid.list-view .card-img{width:200px;height:auto;min-height:140px;flex-shrink:0}
+.cards-grid.list-view .card-body{flex:1}
+.glow-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:3rem 0;opacity:.4}
+.modal-bg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1.5rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);max-width:720px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;animation:popIn .4s cubic-bezier(.23,1,.32,1);position:relative}
+@keyframes popIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:none}}
+.modal-img-wrap{height:260px;position:relative;overflow:hidden;flex-shrink:0}
+.modal-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.modal-img-wrap:hover img{transform:scale(1.04)}
+.modal-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,var(--bg3),var(--bg2))}
+.modal-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,var(--bg2));pointer-events:none}
+.modal-close-btn{position:absolute;top:14px;right:14px;z-index:3;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;backdrop-filter:blur(8px)}
+.modal-close-btn:hover{background:rgba(201,80,80,.6)}
+.modal-header{padding:1.4rem 1.8rem .8rem;position:relative;margin-top:-2rem;z-index:2}
+.modal-badge-el{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:.6rem}
+.modal-zh-el{font-family:'Noto Serif SC',serif;font-size:1.8rem;font-weight:700;color:var(--text);line-height:1.2}
+.modal-en-el{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.modal-quick{display:flex;gap:.5rem;flex-wrap:wrap;padding:0 1.8rem .8rem}
+.qchip{display:flex;align-items:center;gap:6px;font-size:12px;padding:7px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+.modal-scroll{flex:1;overflow-y:auto;padding:0 1.8rem 1.8rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.modal-scroll::-webkit-scrollbar{width:4px}
+.modal-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.m-sec{margin-bottom:1.5rem}
+.m-title{font-size:10px;letter-spacing:2.5px;color:var(--gold);margin-bottom:.8rem;padding-bottom:6px;border-bottom:1px solid rgba(201,168,76,.12)}
+.m-step{display:flex;gap:1rem;margin-bottom:.8rem}
+.m-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;font-weight:600;font-family:'Cinzel',serif}
+.m-body{padding-top:3px;flex:1}
+.m-en{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:3px}
+.m-zh{font-size:12px;color:var(--muted);line-height:1.7}
+.m-box{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:12px;padding:12px 14px;margin:.6rem 0;font-size:13px;line-height:1.75}
+.m-blabel{font-size:10px;letter-spacing:1.5px;color:var(--gold);margin-bottom:5px}
+.m-ben{color:var(--text)}
+.m-bzh{color:var(--muted);font-size:12px;margin-top:3px}
+.m-attn{background:rgba(201,64,64,.07);border:1px solid rgba(201,64,64,.2);border-radius:12px;padding:12px 14px;margin:.8rem 0;font-size:12px;line-height:1.75;color:#EF9A9A}
+.m-attn strong{display:block;font-size:10px;letter-spacing:1.5px;margin-bottom:5px;color:#EF6060}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.crow{background:rgba(255,255,255,.03);border-radius:8px;padding:6px 10px;font-size:11px;line-height:1.5}
+.cnum{color:var(--gold);font-weight:600;font-size:10px}
+.modal-footer{padding:1rem 1.8rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.7rem;flex-wrap:wrap;flex-shrink:0}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(201,168,76,.15);border:1px solid var(--border2);backdrop-filter:blur(20px);color:var(--gold2);padding:10px 20px;border-radius:50px;font-size:13px;z-index:999;opacity:0;transition:all .4s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+footer{position:relative;z-index:2;text-align:center;padding:3rem 2rem;border-top:1px solid var(--border)}
+.flogo{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold);letter-spacing:3px;margin-bottom:.5rem}
+footer p{font-size:12px;color:var(--dim);letter-spacing:2px}
+@media(max-width:700px){.cards-grid{grid-template-columns:1fr}.hero-stats{gap:1.5rem}.nav-inner{border-radius:var(--r-md)}.cards-grid.list-view .card{flex-direction:column}.cards-grid.list-view .card-img{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cur"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<section class="hero">
+  <div class="orb orb1"></div><div class="orb orb2"></div>
+  <div class="hero-badge">✦ TOOL ACTIVATION GUIDE ✦</div>
+  <h1 class="hero-title"><span>工具启动教程</span></h1>
+  <p class="hero-en">Sacred Activation Rituals · 五福临门</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">TOOLS · 工具</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">CATEGORIES</div></div>
+    <div class="stat"><div class="stat-num">122</div><div class="stat-label">PAGES · 页数</div></div>
+  </div>
+  <div class="hero-cta">
+    <button class="btn btn-primary" onclick="document.querySelector('.main').scrollIntoView({behavior:'smooth'})">✦ 开始浏览 Explore</button>
+    <button class="btn btn-ghost" onclick="document.querySelector('.main').scrollIntoView({behavior:'smooth'})">全部工具 All Tools →</button>
+    <button class="btn btn-ghost btn-sm" onclick="openSearch()">🔍 搜索</button>
+  </div>
+  <div class="scroll-arrow">SCROLL</div>
+</section>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">✦ 启动</div>
+    <div class="nav-pills">
+      <button class="pill active" onclick="filterCat('all',this)">全部 All</button>
+      <button class="pill" onclick="filterCat('special',this)">📜 名正言顺</button>
+      <button class="pill" onclick="filterCat('board',this)">🏮 风水牌</button>
+      <button class="pill" onclick="filterCat('watch',this)">⌚ 手表</button>
+      <button class="pill" onclick="filterCat('pendant',this)">💎 吊坠</button>
+      <button class="pill" onclick="filterCat('jewelry',this)">📿 饰品</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openSearch()">🔍</button>
+      <button class="btn btn-ghost btn-sm" onclick="toggleView()">⊞</button>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="filter-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="搜索工具 Search tool..." oninput="doSearch(this.value)">
+    </div>
+    <div class="view-btns">
+      <button class="view-btn active" id="vb-grid" onclick="setView('grid',this)">⊞</button>
+      <button class="view-btn" id="vb-list" onclick="setView('list',this)">☰</button>
+    </div>
+    <select class="sort-sel" onchange="showToast('排序: '+this.options[this.selectedIndex].text)">
+      <option value="">排序 Sort</option>
+      <option value="az">A → Z</option>
+      <option value="cat">按分类</option>
+    </select>
+  </div>
+
+  <div class="sec" id="sec-special" data-cat="special">
+    <div class="sec-head"><div class="sec-accent"></div><div class="sec-text"><h2>SPECIAL · 特别</h2><h3>名正言顺</h3></div><div class="sec-count">1 tool</div></div>
+    <div class="cards-grid" id="g-special"></div>
+  </div>
+  <div class="glow-line"></div>
+  <div class="sec" id="sec-board" data-cat="board">
+    <div class="sec-head"><div class="sec-accent"></div><div class="sec-text"><h2>BOARDS · 风水牌</h2><h3>能量摆件系列</h3></div><div class="sec-count">6 tools</div></div>
+    <div class="cards-grid" id="g-board"></div>
+  </div>
+  <div class="glow-line"></div>
+  <div class="sec" id="sec-watch" data-cat="watch">
+    <div class="sec-head"><div class="sec-accent"></div><div class="sec-text"><h2>WATCHES · 手表</h2><h3>天运手表系列</h3></div><div class="sec-count">21 tools</div></div>
+    <div class="cards-grid" id="g-watch"></div>
+  </div>
+  <div class="glow-line"></div>
+  <div class="sec" id="sec-pendant" data-cat="pendant">
+    <div class="sec-head"><div class="sec-accent"></div><div class="sec-text"><h2>PENDANTS · 吊坠</h2><h3>能量吊坠系列</h3></div><div class="sec-count">9 tools</div></div>
+    <div class="cards-grid" id="g-pendant"></div>
+  </div>
+  <div class="glow-line"></div>
+  <div class="sec" id="sec-jewelry" data-cat="jewelry">
+    <div class="sec-head"><div class="sec-accent"></div><div class="sec-text"><h2>JEWELRY · 饰品</h2><h3>佩戴能量饰品</h3></div><div class="sec-count">5 tools</div></div>
+    <div class="cards-grid" id="g-jewelry"></div>
+  </div>
+</main>
+
+<footer><div class="flogo">五福临门</div><p>工具启动教程 · Tool Activation Guide · 启动时间：日出后两小时内</p></footer>
+
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-img-wrap" id="m-img-wrap">
+      <div class="modal-ph" id="m-ph"></div>
+      <img id="m-img" src="" alt="" style="display:none">
+      <div class="modal-overlay"></div>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      <div class="card-badge" id="m-badge" style="position:absolute;top:14px;right:60px;z-index:3"></div>
+    </div>
+    <div class="modal-header">
+      <div class="modal-badge-el" id="m-badge2"></div>
+      <div class="modal-zh-el" id="m-zh"></div>
+      <div class="modal-en-el" id="m-en"></div>
+    </div>
+    <div class="modal-quick" id="m-quick"></div>
+    <div class="modal-scroll" id="m-scroll"></div>
+    <div class="modal-footer" id="m-footer"></div>
+  </div>
+</div>
+
+<script>
+// ── SHARED BLOCKS ──
+const CG='<div class="m-box"><div class="m-blabel">🎨 绳子颜色配对 · ROPE COLOUR</div><div class="cgrid"><div class="crow"><div class="cnum">No 1 &amp; 6</div>咖啡·棕色·褐黄<br><small style="opacity:.6">Coffee·Brown</small></div><div class="crow"><div class="cnum">No 2 &amp; 7</div>金·白·蓝·黑<br><small style="opacity:.6">Gold·White·Blue·Black</small></div><div class="crow"><div class="cnum">No 3 &amp; 8</div>军绿·红·紫·粉<br><small style="opacity:.6">Green·Red·Purple</small></div><div class="crow"><div class="cnum">No 4 &amp; 9</div>蓝·黑·绿·灰<br><small style="opacity:.6">Blue·Black·Green</small></div><div class="crow" style="grid-column:span 2"><div class="cnum">No 5</div>红色·咖啡·棕·褐黄 <small style="opacity:.6">Red·Coffee·Brown</small></div></div></div>';
+const WP='<div class="m-box"><div class="m-blabel">👗 佩戴方式</div><div class="m-ben">Gold/silver or black bead rope necklace. Chest position. Female: outside. Male: inside.</div><div class="m-bzh">建议搭配黑色绳子项链带珠子。最佳长度在胸部位置。女性佩戴在外，男性佩戴在里。</div></div>';
+const AP='<div class="m-box"><div class="m-blabel">🗣 启动语 · PHRASE</div><div class="m-ben">"Baby, thank you for coming into my world and assist me. To attract wealth, bring me luck. Thank you. I love you!"</div><div class="m-bzh">"宝贝，感谢你从宇宙中来到我身边，帮助我，增加能量，吸引财富、贵人、机会，谢谢你，我爱你!"</div></div>';
+const WH='<div class="m-box"><div class="m-blabel">⌚ 手表提示</div><div class="m-ben">Faster→act faster | Slower→slow down | Stopped→pause &amp; think | Backward→rest &amp; monitor health</div><div class="m-bzh">快即快点，慢即慢点，停即暂停重要事情三思后做决定，逆行注意身体健康。</div></div>';
+const MC='<div class="m-attn"><strong>⚙ 机械表保养</strong>Wind at least twice/month if stored. If stiff: STOP. Manual: rewind same time daily.<br>长时间不戴每月至少上链两次。感觉表冠难以转动时请立即停止。</div>';
+const NR='<div class="m-box"><div class="m-blabel">🔢 数字规则</div><div class="m-ben">Your No. + complementary No. = 9 (e.g. No.3 → No.6 | No.9 → No.9)</div><div class="m-bzh">与您的数字加起来等于9。（3号望6，9号望9）</div></div>';
+const DP='<div class="m-step"><div class="m-num">↻</div><div class="m-body"><div class="m-en">Wear pendant out. At night: remove, place on tissue at bedside. Wear again next day.</div><div class="m-zh">出门佩戴。晚上脱下放在纸巾上，安置床头让宝贝休息。第二天带着出门。</div></div></div>';
+function ms(n,en,zh){return`<div class="m-step"><div class="m-num">${n}</div><div class="m-body">${en?`<div class="m-en">${en}</div>`:''}${zh?`<div class="m-zh">${zh}</div>`:''}</div></div>`}
+function msec(t,b){return`<div class="m-sec"><div class="m-title">${t}</div>${b}</div>`}
+function watchC(mech){return WH+msec('启动步骤',ms(1,'Wipe softly with new tissue or white towel.','用干净面纸巾或小白毛巾轻轻擦拭手表。')+(mech?ms(2,'Before activation: wind crown 31 cycles CLOCKWISE.','机械表启动前顺时针旋转表把31圈上足发条。')+ms(3,'Wear on left hand. Numbers facing wearer.','（无论男女）戴在左手，数字朝着自己的方向。')+ms(4,'Wind once every 2 days.','每两天上链一次，保证能量消耗。')+MC:ms(2,'Ensure time (minutes & seconds) correctly set BEFORE activation.','请确保时间（分钟和秒）设置正确后再启动。')+ms(3,'Wear on left hand. Numbers facing wearer.','（无论男女）戴在左手，数字朝着自己的方向。')))}
+function pendantC(ns,no,comp){return`<div class="m-attn"><strong>⚠ 注意</strong>${ns?'Cannot be soaked. 切记不能浸泡。':''}${no?' Do NOT open. 不能打开。':''} Reactivate weekly or if touched.<br>一星期启动一次，被他人触碰后需再次启动。</div>`+WP+CG+(comp?NR:'')+msec('启动步骤',ms(1,'Within 2 hrs after sunrise, wipe gently with wet tissue.','日出后两小时内，用湿纸巾轻轻擦拭干净。')+ms(2,comp?'Wear on neck, hold in palm, look at complementary number (your No.+needed No.=9), say phrase.':'Wear on neck, hold in palm, think of number you need, say activation phrase.',comp?'穿戴颈上，握在手心，望着所需数字（与您的数字加起来等于9），说启动语。':'穿戴颈上，握在手心，想着所需数字，说启动语。')+AP+DP)}
+
+const BC={special:'bspecial',board:'bboard',watch:'bwatch',pendant:'bpendant',jewelry:'bjewelry'};
+const BL={special:'SPECIAL',board:'BOARD',watch:'WATCH',pendant:'PENDANT',jewelry:'JEWELRY'};
+const MBS={special:'background:rgba(130,80,200,.2);border:1px solid rgba(130,80,200,.4);color:#C08EEF',board:'background:rgba(47,171,128,.2);border:1px solid rgba(47,171,128,.4);color:#5DCCA8',watch:'background:rgba(58,127,191,.2);border:1px solid rgba(58,127,191,.4);color:#7EB8EF',pendant:'background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);color:#E8C97A',jewelry:'background:rgba(201,80,80,.2);border:1px solid rgba(201,80,80,.4);color:#EF8E8E'};
+
+const TOOLS=[
+{id:'name',cat:'special',icon:'📜',en:'Perfectly Justifiable Named',zh:'名正言顺',time:'次日日出后2小时内',placement:'客厅/书柜/书桌/床头柜，竖立打开摆放',summary:'私人静默空间感恩旧名，书写新名字49天每天49遍以上，名册竖立打开',content:msec('启动流程',ms(1,'After deciding on a new name, the FIRST activation: within 2 hrs after sunrise the NEXT DAY, private space, complete silence.','在确定新名字之后，首次启动应在次日日出后两小时内，在私人空间保持静默。')+ms(2,'Express sincere gratitude to your old name.','向旧名字表达真挚感激之情。')+'<div class="m-box"><div class="m-blabel">🗣 感恩语</div><div class="m-ben">"Thank you [Old Name] for accompanying me so long. I have chosen a new name aligned with my Five Blessings. I sincerely ask for your understanding."</div><div class="m-bzh">"感谢您（旧名字）长久以来的陪伴，为了变得更好，如今择配了符合五福临门的新名字，恳请您理解，让我变得越来越好。"</div></div>'+ms(3,'Immediately write your new name at least 49 times/day for 49 CONSECUTIVE days. Horizontal format, left to right.','立即书写新名字。连续49日，每日至少49遍。遵循横排格式，自左至右书写。')+ms(4,'Day 1: within 2 hrs after sunrise. Day 2+: any time sunrise to sunset.','第一天：日出后两小时内。第二天起：日出至日落之间均可。'))+msec('名册摆放','<div class="m-box"><div class="m-ben">Living room, bookshelf, desk (elevated), or bedside table (men: left, women: right). Stand UPRIGHT, keep OPEN. Do NOT hang on wall.</div><div class="m-bzh">客厅、书柜、书桌（宜置于稍高处）或床头柜（男士放左侧，女士放右侧）。竖立放置，保持打开状态。名册切勿挂于墙上。</div></div>')+'<div class="m-attn"><strong>⚠ 绝对不能中断</strong>Process CANNOT be interrupted. If interrupted, restart from the very beginning.<br>书写过程必须连续进行，不得中断。若因故中断，则需从头开始重新书写。五福临门！</div>'},
+{id:'b57',cat:'board',icon:'🏮',en:'57 Feng Shui Board',zh:'57 桌牌',time:'日出后2小时内',placement:'公司/居家大门口上方中间',summary:'湿纸巾擦拭后摆放大门上方正中位置',content:msec('启动步骤',ms(1,'Within 2 hrs after sunrise, wipe gently with wet tissue.','日出后两小时内，用湿纸巾轻轻擦拭干净。')+ms(2,'Place above and centre of the main entrance door (office or home).','摆放在公司或居家大门口上方中间位置。'))},
+{id:'b63',cat:'board',icon:'🏮',en:'63 Feng Shui Board',zh:'63 桌牌',time:'日出后2小时内',placement:'面洽时放包内，下班放厅里台子',summary:'湿纸巾擦拭，面洽时随身携带，下班后放桌上休息',content:msec('启动步骤',ms(1,'Within 2 hrs after sunrise, wipe gently with wet tissue.','日出后两小时内，用湿纸巾轻轻擦拭干净。')+ms(2,'Business meeting: activate then place in your bag to carry.','如去面洽谈生意，启动后放在包里随身携带。')+ms(3,'After work: place on table/desk in living area to rest.','下班后放到厅里的台子/书台上，让宝贝休息。'))},
+{id:'b96',cat:'board',icon:'🏮',en:'96 Feng Shui Board',zh:'96 桌牌',time:'日出后2小时内',placement:'财务室 或 卧室（守财聚财）',summary:'湿纸巾擦拭后摆放财务室或主卧守财聚财',content:msec('启动步骤',ms(1,'Within 2 hrs after sunrise, wipe gently with wet tissue.','日出后两小时内，用湿纸巾轻轻擦拭干净。')+ms(2,'Place in: 1) Financial/accounts dept, OR 2) Master bedroom (guard and gather wealth).','摆放在：1）财务室，或 2）卧室（守财，聚财）。'))},
+{id:'b165',cat:'board',icon:'⚖️',en:'165 Balance Board',zh:'165 平衡牌',time:'日出后2小时内',placement:'厨房水槽与灶台之间/车尾箱/病人枕下',summary:'湿纸巾擦拭，说启动语"165,165…"，摆放厨房/车/病床',content:msec('启动步骤',ms(1,'Wipe gently with wet tissue.','用湿纸巾轻轻擦拭干净。')+ms(2,'Place in position and say the activation phrase:','放置在指定位置，说启动语：')+'<div class="m-box"><div class="m-blabel">🗣 启动语</div><div class="m-ben">"165, 165, Thank you. You come to our home to balance out the 5 elements of life. Thank you and I love you!"</div><div class="m-bzh">"165，165，感谢您从宇宙来到我的家，为我们平衡五行，谢谢您，我爱你！"</div></div>')+msec('摆放位置',ms('A','Home kitchen: between basin and stove (balances fire & water).','居家厨房，摆放在水槽与灶台之间，平衡水火冲。')+ms('B','Car: car boot facing driver seat. Flat or 45°. Secure it.','车尾箱，对正司机驾座。可平躺或45度倾斜，固定好不移位。')+ms('C','Sick patient: below pillow or under mattress.','病人：睡枕底下或病床底下。'))+'<div class="m-attn"><strong>⚠ 注意</strong>ONE person for activation only. Keep area clean &amp; tidy.<br>启动只可以由一个人负责。摆放四周需干净整齐。</div>'},
+{id:'nine',cat:'board',icon:'⚡',en:'Nine Harmony Balance Board',zh:'九合平衡牌',time:'日出后2小时内',placement:'办公室或家里客厅，正对大门方向',summary:'湿纸巾擦拭，说启动语，需提供姓名/生日/门向，正对大门摆放',content:msec('启动步骤',ms(1,'Wipe gently with wet tissue, place in designated position.','用湿纸巾轻轻擦拭干净，然后放在指定位置。')+ms(2,'Say activation phrase:','说启动语：')+'<div class="m-box"><div class="m-blabel">🗣 启动语</div><div class="m-ben">"Jiuhe, Jiuhe, thank you for coming from the universe to elevate our energy. Thank you, I love you!"</div><div class="m-bzh">"九合，九合，感谢您从宇宙来到我的家，为我们提升能量，谢谢您，我爱你！"</div></div>'+ms(3,'Place/hang in office or living room, facing main door.','在办公室或家里客厅摆放或挂放，正对大门方向。'))+msec('摆放前需提供','<div class="m-box"><div class="m-ben">1. Place of use: office or home<br>2. Main door direction: East/South/West/North<br>3. User &amp; initiator: name, DOB, gender, birth time</div><div class="m-bzh">1. 确定使用地方（办公室或家里）<br>2. 入户门大门朝向（东南西北）<br>3. 使用人和启动人（姓名、出生日期、性别、时辰）</div></div>')+'<div class="m-attn"><strong>⚠ 注意</strong>ONE person for activation. Changing location: reactivate within 2 hrs after sunrise next day. Different address = retrieve for resolution.<br>启动只可以由一个人负责。变换位置次日重新启动。不同地址需拿回化解。</div>'},
+{id:'dragon',cat:'board',icon:'🐉',en:'Dragon Board',zh:'寻龙撅',time:'日出后2小时内',placement:'仅限办公室或客厅（不能放睡房/神台）',summary:'确保口气清新 → 对龙嘴各吹三口气 → 一头朝外一头朝内',content:msec('启动步骤',ms(1,'Ensure fresh breath. Wipe entire Dragon Board clean with wet tissue.','确保口气清新。用湿纸巾轻轻擦拭干净整个寻龙撅。')+ms(2,'Blow THREE breaths into EACH dragon\'s mouth (both sides) to activate energy.','对两边的龙嘴各吹三口气，打通并激活能量。')+ms(3,'Place in office or living room ONLY. One end OUTWARD, other end INWARD.','摆放在办公室或客厅。寻龙撅摆正，一头朝外，一头朝内。'))+msec('方向指引','<div class="m-box"><div class="m-ben">Dragon mouth faces strong magnetic field areas: banks, hotels, schools, roads.<br>Outward: no curtains blocking dragon\'s eyes.<br>Inward: space for wealth — no mirrors, toilet odors, or kitchen fire.</div><div class="m-bzh">龙嘴对正磁场强的地方：银行、财务中心、酒店、学校、马路等。向外不要有窗帘遮挡龙眼。向内龙嘴要有聚财空间，不能有镜子、厕所臭气、厨房的火。</div></div>')+'<div class="m-attn"><strong>⚠ 切记</strong>NEVER place in bedroom or altar. NEVER rotate or twist open. Place "Do Not Touch" sign nearby.<br>切记不能放置睡房或神台。切记不能旋转，千万不要扭开。建议旁边摆放"贵重物品，请勿触碰"牌子。</div>'},
+...[['harmony','鸿运手表','Harmony Watch',false],['rayzhu','瑞驻手表','Ray Zhu Watch',false],['rayqi','瑞启手表','Ray Qi Watch',false],['tianzun','天尊手表','Tian Zun Watch',false],['skypeace','天祥手表','Sky Peace Watch',false],['skysplendor','天威手表','Sky Splendor Watch',true],['skywisdom','天智手表','Sky Wisdom Watch',false],['star','天星手表','Star Watch',false],['tianfu_m','天富手表（男款）','Tian Fu Watch (Male)',true],['tianfu_f','天富手表（女款）','Tian Fu Watch (Female)',false],['tiangui','天贵手表','TIANGUI Watch',true],['tianguan','天观手表','Tian Guan Watch',true],['tianheng','天恒手表','Tian Heng Watch',true],['tianjin','天晋手表','Tian Jin Watch',true],['tiansheng','天升手表','Tian Sheng Watch',true],['tianze','天泽手表','Tian Ze Watch',true],['tianlun','天润手表','Tian Lun Watch',false],['tianyi','天益手表','Tian Yi Watch',false],['tianjie','天解手表','Tian Jie Watch',true],['tianyao','天耀手表','Tian Yao Watch',false],['tianxi','天希手表','Tian Xi Watch',true]].map(([id,zh,en,m])=>({id,cat:'watch',icon:'⌚',en,zh,time:'日出后2小时内',placement:`左手佩戴（无论男女），数字朝向自己${m?' · 机械表先上链31圈':''}`,summary:m?'湿纸巾擦拭 → 上链31圈 → 戴在左手数字朝向自己':'湿纸巾擦拭 → 确认时间正确 → 戴在左手数字朝向自己',content:watchC(m)})),
+...[['kaimeng','开蒙吊坠','Enlightenment Pendant',true,false,false],['kaicui','开萃吊坠','Kaicui Pendant',true,false,true],['zodiac','生肖吊坠','Zodiac Pendant',true,false,false],['kaijian','开渐吊坠','Kaijian Pendant',true,true,true],['kaihe','开合吊坠','Kaihe Pendant',true,false,false],['luckynoble_new','开运吊坠（新）','Lucky Noble Pendant (New)',true,false,false],['luckynoble','开运吊坠','Lucky Noble Pendant',true,true,true],['kaiyuan','开元吊坠','Kaiyuan Pendant',true,false,true]].map(([id,zh,en,ns,no,comp])=>({id,cat:'pendant',icon:'💎',en,zh,time:'日出后2小时内',placement:'胸部位置。女性戴外，男性戴内',summary:`湿纸巾擦拭 → ${comp?'望互补数字（加起来=9）':'想所需数字'} → 说启动语 → 每周启动一次`,content:pendantC(ns,no,comp)})),
+{id:'qiankun',cat:'pendant',icon:'☯️',en:'QianKun Noble Pendant',zh:'乾坤吊坠',time:'日出后2小时内',placement:'胸部位置。女性戴外，男性戴内',summary:'首次浸泡10分钟/之后30分钟 → 阳光风干 → 望互补数字说启动语',content:'<div class="m-attn"><strong>⚠ 浸泡规则</strong>First: soak 10 min. Subsequent: soak 30 min. Once/week. Reactivate if touched.<br>第一次浸泡10分钟，之后每次30分钟。每周启动一次，被他人触碰后需再次启动。</div>'+WP+CG+NR+msec('启动步骤',ms(1,'Prepare NEW, simple, transparent, round glass WITHOUT handle. Do NOT share.','准备全新，简单，透明，圆弧形，没有手柄的玻璃杯。不能和别人共用。')+ms(2,'Fill glass 80% with tap water. Soak pendant 10 min (1st) / 30 min (subsequent).','杯子装80%自来水。首次浸泡10分钟/之后30分钟。')+ms(3,'Remove, place on tissue, dry naturally under the sun.','拿出放在纸巾上，置于阳光处小晒自然风干。')+ms(4,'Wear on neck, hold in palm, look at complementary number, say activation phrase.','穿戴颈上，握在手心，望着所需数字，说启动语。')+AP+DP)},
+{id:'bracelet_ruoxi',cat:'jewelry',icon:'📿',en:'Affluence Bracelet (Ruoxi)',zh:'若熙手链',time:'日出后2小时内',placement:'左手佩戴，数字朝向自己',summary:'⚠️ 切记不能碰水！新白毛巾（干）擦拭 → 戴在左手数字朝向自己',content:'<div class="m-attn"><strong>⚠⚠ 绝对不能碰水 · NO WATER EVER</strong>Made of Zitan (小叶紫檀) — CANNOT get wet. Use DRY white towel ONLY. No wet tissue!<br>若熙手链材质是小叶紫檀，绝对不可以碰水！只能用干的白毛巾擦拭！</div>'+msec('启动步骤',ms(1,'Wipe softly with a NEW white small towel — DRY only.','用新的白毛巾（干的）轻轻擦拭。')+ms(2,'Wear on LEFT hand. Numbers on bracelet must face toward the wearer.','戴在左手，看手链上的数字朝着自己的方向。'))},
+{id:'bracelet_energy',cat:'jewelry',icon:'📿',en:'Energy Boost Bracelet',zh:'数字幸福手链',time:'日出后2小时内',placement:'左腕佩戴，数字必须为正向',summary:'新玻璃杯装80%水浸泡10分钟 → 阳光风干 → 戴左腕正向',content:msec('启动步骤',ms(1,'Prepare NEW, simple, transparent, round glass WITHOUT handle.','准备全新，简单，透明，圆弧形，没有手柄的玻璃杯。')+ms(2,'Fill glass 80% with tap water. Soak bracelet for 10 minutes.','杯子装80%自来水，手链浸泡10分钟。')+ms(3,'Remove, place on tissue, dry naturally under sunlight.','拿出放在纸巾上，置于阳光处小晒自然风干。')+ms(4,'Wear on LEFT wrist. Ensure numbers are in CORRECT/POSITIVE orientation (正向).','佩戴在左腕，注意观察自己看到的数字必须为正向。'))},
+{id:'tongren',cat:'jewelry',icon:'🌸',en:'Tong Ren Earring',zh:'同人耳环',time:'日出后2小时内',placement:'耳环 — 出门佩戴，晚上安置床头',summary:'湿纸巾擦拭 → 掌心说启动语 → 出门佩戴 → 晚上床头休息',content:'<div class="m-attn"><strong>⚠ 注意</strong>Do NOT soak. Reactivate if touched by others. Once a month.<br>禁止浸泡。被他人接触后需再次启动。建议每月启动一次。</div>'+msec('启动步骤',ms(1,'Within 2 hrs after sunrise, gently wipe earrings with damp tissue.','日出后两小时内，用湿纸巾细致而轻柔地擦拭耳环。')+ms(2,'Place earrings in palm and say activation phrase.','把耳环放在掌心，对耳环说启动语。')+'<div class="m-box"><div class="m-blabel">🗣 启动语</div><div class="m-ben">"Dear treasure, thank you for coming to me from the universe, helping me, enhancing my energy, attracting wealth, benefactors, and opportunities. Thank you, I love you!"</div><div class="m-bzh">"宝贝，感谢你从宇宙中来到我身边，帮助我，增加能量，吸引财富，贵人，机会，谢谢你，我爱你!"</div></div>'+ms(3,'Wear earrings and go out.','穿戴耳上，带着宝贝出门。')+ms(4,'At night: remove, place on tissue at bedside. Wear again next day.','晚上回家后，脱下放在纸巾上，安置床头让宝贝休息。第二天带着出门。'))},
+{id:'tongyou',cat:'jewelry',icon:'🌸',en:'Tong You Earring',zh:'同有耳环',time:'日出后2小时内',placement:'耳环 — 出门佩戴，晚上安置床头',summary:'湿纸巾擦拭 → 掌心说启动语 → 出门佩戴 → 晚上床头休息',content:'<div class="m-attn"><strong>⚠ 注意</strong>Do NOT soak. Reactivate if touched. Once a month. 禁止浸泡。每月启动一次。</div>'+msec('启动步骤',ms(1,'Within 2 hrs after sunrise, gently wipe earrings with damp tissue.','日出后两小时内，用湿纸巾细致而轻柔地擦拭。')+ms(2,'Place in palm, say activation phrase.','把耳环放在掌心，说启动语。')+'<div class="m-box"><div class="m-blabel">🗣 启动语</div><div class="m-ben">"Dear treasure, thank you for coming to me from the universe, helping me, enhancing my energy, attracting wealth, benefactors, and opportunities. Thank you, I love you!"</div><div class="m-bzh">"宝贝，感谢你从宇宙中来到我身边，帮助我，增加能量，吸引财富，贵人，机会，谢谢你，我爱你!"</div></div>'+ms(3,'Wear earrings out. At night: remove, rest at bedside. Next day wear again.','穿戴出门；晚上脱下放纸巾上安置床头休息；第二天带着出门。'))},
+{id:'ring',cat:'jewelry',icon:'💍',en:'Rings',zh:'戒指',time:'日出后2小时内',placement:'左手中指（无论男女）· LEFT MIDDLE FINGER',summary:'首次浸泡10分/之后30分 → 风干 → 说启动语 → 戴左手中指（须先戴手表）',content:'<div class="m-attn"><strong>⚠ 重要规则</strong>1. LEFT MIDDLE finger (male &amp; female).<br>2. Must own a WATCH first before wearing ring.<br>3. 1st: soak 10 min. Subsequent: 30 min.<br>4. Multiple tools: same glass, one by one — NEVER share glass.<br><br>1. 无论男女都戴在左手中指。2. 还没戴手表不能带戒指。3. 首次10分钟，之后30分钟。4. 多个工具可在同一杯子里个别启动，不要和别人共用杯子。</div>'+msec('启动步骤',ms(1,'Prepare NEW, simple, transparent, round glass WITHOUT handle. Do NOT share.','准备全新，简单，透明，圆弧形，没有手柄的玻璃杯。不能和别人共用。')+ms(2,'Fill 80% with tap water. Soak ring 10 min (1st) / 30 min (subsequent).','杯子装80%自来水。首次浸泡10分钟/之后30分钟。')+ms(3,'Remove, place on tissue, dry naturally under the sun.','拿出放在纸巾上，置于阳光处自然风干。')+ms(4,'Say activation phrase to the ring:','然后对戒指说启动语：')+'<div class="m-box"><div class="m-blabel">🗣 启动语</div><div class="m-ben">"Dear treasure, thank you for coming to me from the universe, helping me, enhancing my energy and increasing my control. Thank you, I love you!"</div><div class="m-bzh">"宝贝，感谢你从宇宙中来到我身边，帮助我，让我提升能量和增加掌控力，谢谢你，我爱你!"</div></div>'+ms(5,'Wear on left middle finger. Activation complete!','戴在左手中指，启动完成！')+ms(6,'At night: gently remove, place on soft tissue at bedside to rest.','晚上轻柔取下，放在柔软纸巾上，安置于床头充分休息。')+ms(7,'Next morning: wear the ring again.','次日清晨，请再次佩戴戒指。'))},
+];
+
+const GMAP={special:'g-special',board:'g-board',watch:'g-watch',pendant:'g-pendant',jewelry:'g-jewelry'};
+TOOLS.forEach((t,i)=>{
+  const g=document.getElementById(GMAP[t.cat]);if(!g)return;
+  const d=document.createElement('div');
+  d.className='card';d.dataset.cat=t.cat;d.dataset.id=t.id;d.dataset.en=t.en.toLowerCase();d.dataset.zh=t.zh;
+  d.style.transitionDelay=((i%6)*55)+'ms';
+  d.innerHTML=`<div class="card-img"><div class="card-ph" id="iph-${t.id}">${t.icon}</div><img id="img-${t.id}" src="" alt="${t.zh}" onerror="this.style.display='none';document.getElementById('iph-${t.id}').style.display='flex'"><div class="card-img-overlay"></div><div class="card-badge ${BC[t.cat]}">${BL[t.cat]}</div><div class="card-img-title"><div class="czh">${t.zh}</div><div class="cen">${t.en}</div></div></div><div class="card-body"><div class="card-meta"><div class="meta-chip"><span class="mcdot"></span>${t.time}</div></div><div class="card-summary">${t.summary}</div><div class="card-actions"><button class="act-btn act-primary" onclick="openModal('${t.id}')">✦ 查看详情</button><button class="act-btn act-ghost" onclick="copyTool(event,'${t.id}')">⎘ 复制</button><button class="act-btn act-ghost act-icon-btn" onclick="evt(event,'share','${t.id}')" title="Share">↗</button></div></div>`;
+  g.appendChild(d);
+});
+
+function openModal(id){
+  const t=TOOLS.find(x=>x.id===id);if(!t)return;
+  const bg=document.getElementById('modal-bg');
+  const img=document.getElementById('img-'+id);
+  const mimg=document.getElementById('m-img'),mph=document.getElementById('m-ph');
+  if(img&&img.src&&img.src!==location.href&&img.src!==location.href+'/'){
+    mimg.src=img.src;mimg.style.display='block';mph.style.display='none';
+  }else{mimg.style.display='none';mph.style.display='flex';mph.textContent=t.icon;}
+  document.getElementById('m-badge').className=`card-badge ${BC[t.cat]}`;document.getElementById('m-badge').textContent=BL[t.cat];
+  document.getElementById('m-badge2').style.cssText=MBS[t.cat];document.getElementById('m-badge2').textContent=BL[t.cat];
+  document.getElementById('m-zh').textContent=t.zh;document.getElementById('m-en').textContent=t.en;
+  document.getElementById('m-quick').innerHTML=`<div class="qchip"><span>⏰</span>${t.time}</div><div class="qchip"><span>📍</span>${t.placement.slice(0,45)}${t.placement.length>45?'…':''}</div>`;
+  document.getElementById('m-scroll').innerHTML=t.content||'';
+  document.getElementById('m-footer').innerHTML=`<button class="btn btn-primary btn-sm" onclick="copyTool(null,'${id}')">⎘ 复制启动步骤</button><button class="btn btn-ghost btn-sm" onclick="showToast('↗ 分享: ${t.zh}')">↗ 分享</button><button class="btn btn-ghost btn-sm" onclick="closeModal()">✕ 关闭</button>`;
+  bg.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeModal(e){if(e&&e.target!==document.getElementById('modal-bg'))return;document.getElementById('modal-bg').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('modal-box').onclick=e=>e.stopPropagation();
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function copyTool(e,id){if(e)e.stopPropagation();const t=TOOLS.find(x=>x.id===id);if(!t)return;const txt=`${t.zh} (${t.en})\n启动时间：${t.time}\n摆放位置：${t.placement}\n摘要：${t.summary}`;navigator.clipboard?.writeText(txt).then(()=>showToast('✓ 已复制 Copied!')).catch(()=>showToast('复制失败'));}
+function evt(e,type,id){if(e)e.stopPropagation();const t=TOOLS.find(x=>x.id===id);if(t)showToast(`↗ ${t.zh}`);}
+function filterCat(cat,el){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));if(el)el.classList.add('active');document.querySelectorAll('.sec').forEach(s=>{s.style.display=(cat==='all'||s.dataset.cat===cat)?'':'none';});document.querySelectorAll('.glow-line').forEach(l=>l.style.display=cat==='all'?'':'none');}
+function doSearch(q){const lq=q.toLowerCase();document.querySelectorAll('.card').forEach(c=>{c.style.display=(!q||c.dataset.en.includes(lq)||c.dataset.zh.includes(q))?'':'none';});if(q){document.querySelectorAll('.sec,.glow-line').forEach(s=>s.style.display='');}}
+function openSearch(){document.getElementById('search-input').focus();document.querySelector('.main').scrollIntoView({behavior:'smooth'});}
+let isGrid=true;
+function setView(v,btn){isGrid=(v==='grid');document.querySelectorAll('.cards-grid').forEach(g=>{g.classList.toggle('list-view',!isGrid);});document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function toggleView(){setView(isGrid?'list':'grid',document.getElementById(isGrid?'vb-list':'vb-grid'));}
+
+// Photo API
+window.setToolImage=function(id,url){
+  const img=document.getElementById('img-'+id),ph=document.getElementById('iph-'+id);
+  if(img){img.src=url;img.style.cssText='display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s';if(ph)ph.style.display='none';}
+  showToast('✓ 图片已添加: '+id);
+};
+
+// Scroll reveal
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.06});
+document.querySelectorAll('.card,.sec-head').forEach(el=>obs.observe(el));
+
+// Cursor
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+document.addEventListener('mousedown',()=>cur.classList.add('big'));
+document.addEventListener('mouseup',()=>cur.classList.remove('big'));
+document.querySelectorAll('button,.card,.pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// Particle canvas
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,P=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkP(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.55+.08,ph:Math.random()*Math.PI*2,sp:Math.random()*.02+.004};}
+  function init(){resize();P=Array.from({length:200},mkP);}
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<P.length;i++){
+      for(let j=i+1;j<P.length;j++){
+        const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<75){ctx.strokeStyle=`rgba(201,168,76,${.04*(1-d/75)})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(P[i].x,P[i].y);ctx.lineTo(P[j].x,P[j].y);ctx.stroke();}
+      }
+    }
+    P.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.ph+=p.sp;
+      if(p.x<0||p.x>W||p.y<0||p.y>H){Object.assign(p,mkP());p.x=Math.random()*W;p.y=Math.random()*H;}
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,240,200,${p.o*(.4+.6*Math.sin(p.ph))})`;ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize',init);init();loop();
+})();
+
+// Parallax orbs
+window.addEventListener('scroll',()=>{const y=window.scrollY;document.querySelector('.orb1').style.transform=`translateY(${y*.3}px)`;document.querySelector('.orb2').style.transform=`translateY(${-y*.2}px)`;});
+</script>
+</body>
+</html>
